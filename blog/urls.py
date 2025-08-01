@@ -5,5 +5,5 @@ app_name = 'blog' # Допомагає упорядкувати url адреси
 
 urlpatterns = [
     path('', views.post_list, name='post_list'),
-    path('<int:pk>/', views.post_detail, name='post_detail'),
+    path('<int:id>/', views.post_detail, name='post_detail'),
 ]
