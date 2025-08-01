@@ -3,7 +3,13 @@ from django.utils import timezone
 from django.conf import settings
 
 # Create your models here.
+class PublishManager (models.Manager): # Можна ще змінювати поведінку функцій create, get_or_create, bulk_create
+                                       # Можна змінювати ще сам об єкт QuerySet, тобто створити новий і перепризначити
+                                       
 
+    def get_queryset(self):
+        return super().get_queryset().filter (status=Post.Status.PUBLISHED)
+    
 
 
 class Post (models.Model):
@@ -32,6 +38,9 @@ class Post (models.Model):
         choices=Status.choices,
         default = Status.DRAFT
     )
+
+    objects = models.Manager() # для того, щоб вказати інший дефолтний модельний менеджер ми повинні в meta прописати default_manager_name
+    published = PublishManager() # вказуємо додатковий прикладний менеджер
 
     class Meta:
 
