@@ -1,0 +1,191 @@
+user = User.objects.get(username='kiril') - повертає лише 1 об єкт інакше помилку
+
+
+
+Post.objects.create (title='one more post', slug ='one-more-post', body='post body', author=user) спосіб створення і запам в бд
+
+
+
+user, created = User.objects.get_or_create(username='user2') - знаходить або створює об єкт, якщо нема
+
+
+
+
+post.title = 'New title'
+post.save() - Оновлення запису (SQL UPDATE)
+
+
+
+
+
+all_posts = Post.objects.all() - отримати всі об єкти
+
+
+
+
+
+Post.objects.filter(title = 'one more post') - Фільтрація
+
+
+
+
+Post.objects.filter (id__exact = 1 ) - Точне співпадіння (__exact)
+
+
+
+Post.objects.filter (title__iexact = "ONE MoRe post") - Точне співпадіння без врахування регістру
+
+
+
+
+Post.objects.filter (title__contains = 'one') - Пошук на входження (в SQL записується як LIKE)
+
+
+
+
+
+
+Post.objects.filter (title__icontains = 'OnE') - Пошук на входження (в SQL записується як LIKE), без врахування регістру
+
+
+
+
+
+
+
+Post.objects.filter (id__in = [1,3]) - Перевірка наявності заданого ітерованого об єкту (список, кортеж)
+
+
+
+Post.objects.filter (id__gt=2)
+Post.objects.filter (id__gte=2)
+Post.objects.filter (id__lt=2)
+Post.objects.filter (id__lte=2) -  перевірка чи є ідентифікатори більше, менше, разом з рівне (>, <, >=, <=)
+
+
+
+
+
+Post.objects.filter (title__startswith = 'one') - Знайти всі записи в яких поле починається з 'one'
+Post.objects.filter (title__istartswith = 'one') - не чутлива до регістру версія
+
+
+Аналогічно знайти записи, які закінчуються на певний фрагмент (чутлива/не чутлива до регістру версії)
+Post.objects.filter (title__endswith = 'one') 
+Post.objects.filter (title__iendswith = 'one')
+
+
+
+
+Post.objects.filter (publish__date = date(2025,7,30)) - пошук по конкретно заданій даті
+Також можна шукати по дням, рокам, місяцям
+
+Post.objects.filter (publish__year=2025)
+Post.objects.filter (publish__month=7)
+Post.objects.filter (publish__day=30)
+
+
+
+
+
+Можна робити цепочку запитів
+Post.objects.filter (publish__date__gt = date(2025,6,30))
+
+
+
+
+
+
+Пошук для зв язаних полів
+Post.objects.filter (author__username='kiril')
+Post.objects.filter (author__username__startswith='k')
+
+
+
+
+
+
+Пошук записів по декільком полям
+Post.objects.filter (publish__year = 2025, title__exact='one more post')
+
+
+
+
+
+Пошук по вже відфільтрованому
+... .filter(. . .).filter(. . .)
+
+
+
+
+
+
+
+Post.objects.filter (publish__year = 2025).exclude(title__iendswith='post') - Не враховувати ті записи які закінчуються на post
+
+
+
+
+
+
+
+Сортування по зростанню або спаданню
+Post.objects.order_by ('title')
+Post.objects.order_by ('-title')
+Post.objects.order_by ('author', 'title')
+
+
+випадкове впорядкування
+Post.objects.order_by ('?')
+
+
+
+
+
+
+Обмеження на кілкість елементів
+Post.objects.all ()[:3]
+Post.objects.all ()[3:6]
+Повернення одного елемента
+Post.objects.order_by ('?')[0]
+
+
+
+
+Порахувати кількісь записів
+Post.objects.filter (id__lt = 3).count()
+
+
+
+
+
+
+Перевірка існування об єкта
+Post.objects.filter (title__startswith = 'one').exists ()
+
+
+
+
+
+
+
+Видалення об єктів
+post = Post.objects.get(id=1)
+post.delete()
+
+
+
+
+
+
+
+Якщо потрібно у фільтрі поставити або то, або то, то варто використовувати Q об єкти. Сюди також входить складні запити на фільтрацію
+from django.db.models import Q
+starts_who = Q(title__istartswith='who')
+starts_why = Q (title__istartswith='why')
+Post.objects.filter (starts_who | starts_why) - | - або, ^ - XOR, & - and
+
+
+
+
+
