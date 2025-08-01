@@ -4,6 +4,8 @@ from django.conf import settings
 
 # Create your models here.
 
+
+
 class Post (models.Model):
 
     class Status (models.TextChoices): # створення власного поля для вибору
