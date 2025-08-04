@@ -8,7 +8,7 @@
     <h1>My blog</h1>
     {% for post in posts %}
         <h2>
-            <a href="{% url 'blog:post_detail' post.id %}">
+            <a href="{{ post.get_absolute_url }}">
                 {{ post.title }}
             </a>
         </h2>
@@ -18,4 +18,6 @@
         {{post.body|truncatewords:30|linebreaks}} 
         <!-- truncate - обмеження до вказаного числа слів, linebreaks - конвертує результат в розриви рядків (<br>) -->
     {% endfor %}
+    {% include 'pagination.html' with page=posts %}
+    <!-- posts - об єкт Pages -->
 {% endblock %}
