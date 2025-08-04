@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 
 # Create your views here.
 
@@ -11,11 +11,22 @@ def post_list (request):
     post_list = Post.published.all()
     paginator = Paginator(post_list, 3)
     page_number = request.GET.get('page', 1)
-    posts = paginator.page(page_number) # це об єкт page де буде зберігатися ітерована послідовність (list of sth) 
-                                        # та номер сторінки з можливістю використання функцій has_previous, has_next,
-                                        # number (поточний номер сторінки), next_page_number, previous_page_number
-                                        # page_object.paginator.num_pages, page_object.paginator.num_pages
-                                        # page_object в даному випадку це posts
+    
+    try:
+    
+        posts = paginator.page(page_number) # це об єкт page де буде зберігатися ітерована послідовність (list of sth) 
+                                            # та номер сторінки з можливістю використання функцій has_previous, has_next,
+                                            # number (поточний номер сторінки), next_page_number, previous_page_number
+                                            # page_object.paginator.num_pages, page_object.paginator.num_pages
+                                            # page_object в даному випадку це posts
+
+    except PageNotAnInteger: # Якщо в запит буде введено щось , що не є цілим числом
+
+        posts = paginator.page (1)
+    
+    except EmptyPage: # якщо за межіми діапазона доступних сторінок
+
+        posts = paginator.page(paginator.num_pages)
 
     context = {
         'posts':posts
