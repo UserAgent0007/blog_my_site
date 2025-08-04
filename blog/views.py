@@ -1,10 +1,18 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
+from django.views.generic import ListView
 
 # Create your views here.
 
 from .models import Post
+
+class PostListView (ListView):
+
+    context_object_name = 'posts'
+    queryset = Post.published.all()
+    paginate_by = 3 # повертає у шаблон змінну під назвою page_obj
+    template_name = 'blog/post/list.html'
 
 def post_list (request):
 
