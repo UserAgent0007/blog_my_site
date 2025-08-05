@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config # необхідне для кращого відщіплення змінних від конфігураційного файлу
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,3 +125,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configuration of posting server
+EMAIL_HOST = 'smtp.gmail.com' # хост SMTP сервера
+EMAIL_HOST_USER = config ('EMAIL_HOST_USER') # наподобі пропуску до SMTP сервера, щоб сайт отримав змогу надсилати листи (це логін)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') # пароль до цього сервісу
+EMAIL_PORT = 587 # SMTP порт 
+EMAIL_USE_TLS = True # захисне з єднання транспортного шару
+DEFAULT_FROM_EMAIL = config ('DEFAULT_FROM_EMAIL') # Адреса з якої будуть надсилатися листи від сайту, якщо іншої не вказано
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # Для того щоб бачити листи в консолі, для тестування
