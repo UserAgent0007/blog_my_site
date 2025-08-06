@@ -1,10 +1,11 @@
-from .forms import EmailPostForm
+from .forms import EmailPostForm, CommentForm
 
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 from django.views.generic import ListView
 from django.core.mail import send_mail
+from django.views.decorators.http import require_POST # декоратор, який вимагає, щоб запит був POST
 
 # Create your views here.
 
@@ -55,7 +56,10 @@ def post_detail (request, year, month, day, post):
 
     post = get_object_or_404 (Post, status = Post.Status.PUBLISHED, publish__year = year, publish__month = month, publish__day = day, slug = post)
     
-    return render (request, 'blog/post/detail.html', {'post':post})
+    comments = post.comments.filter (active = True)
+    form = CommentForm ()
+
+    return render (request, 'blog/post/detail.html', {'post':post, 'comments': comments, 'form': form})
 
 def post_share (request, post_id):
 
@@ -90,3 +94,25 @@ def post_share (request, post_id):
         form = EmailPostForm
 
     return render (request, 'blog/post/share.html', {'form': form, 'post': post, 'sent':sent})
+
+@require_POST # декоратор, який вимагає, щоб запит був POST
+def post_comment (request, post_id):
+
+    post = get_object_or_404 (Post, id = post_id, status = Post.Status.PUBLISHED)
+    comment = None
+
+    form = CommentForm (data = request.POST)
+    
+    if form.is_valid ():
+
+        comment = form.save(commit = False) # без збереження у базу даних
+        comment.post = post
+        comment.save()
+
+    context = {
+        'post': post,
+        'form': form,
+        'comment': comment
+    }
+
+    return render (request, 'blog/post/comment.html', context)
