@@ -11,4 +11,43 @@
     <p>
         <a href="{% url 'blog:post_share' post.id %}">Share this post</a>
     </p>
+    <!-- with  ...  endwith  - це використовується для перепризначення змінних, ці перепризначені змінні будуть доступнідо кінця блока  endwith  -->
+    {% with comments.count as total_comments %}
+        <h2>
+            {{ total_comments }} comment{{ total_comments|pluralize }} 
+            <!-- pluralize - команда призначена для добавляння суфікса множини -->
+        </h2>
+    {% endwith %}
+
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Comment {{ forloop.counter }} by {{ comment.name }}
+                {{ comment.created }}
+                <!-- forloop.counter - лічильник циклу -->
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>There are no comments</p>
+    {% endfor %}
+    
+    <!-- {% include 'blog/post/includes/comment_form.html' %} -->
+    <!-- інший варіант використання форми (вручну налаштовувати кожне поле) -->
+
+    <h2>Add new comment</h2>
+    <form action="{% url 'blog:post_comment' post.id %}" method="post">
+        {% csrf_token %}
+        <div class="left">
+            {{ form.name.as_field_group }}
+        </div>
+        <!-- fieldgroup дає нам можливість об єднати все (поле, помилки, підказки). Або можна було би конкретно прописати
+             errors, label_tag, help_text|safe (все це після назви поля). safe вказує на те, що тег є безпечним 
+             і він буде відображатися як тег сторінки, а не просто як текст -->
+        <div class="left">
+            {{ form.name.as_field_group }}
+        </div>
+        {{ form.body.as_field_group }}
+        <p><input type="submit" value="Add comment"></p>
+    </form>
 {% endblock %}

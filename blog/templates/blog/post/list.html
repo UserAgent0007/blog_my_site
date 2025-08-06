@@ -18,6 +18,7 @@
         {{post.body|truncatewords:30|linebreaks}} 
         <!-- truncate - обмеження до вказаного числа слів, linebreaks - конвертує результат в розриви рядків (<br>) -->
     {% endfor %}
-    {% include 'pagination.html' with page=page_obj %}
+    {% include 'pagination.html' with page=page_obj %} 
+    <!-- with допомагає зробити підміну -->
     <!-- posts - об єкт Pages -->
 {% endblock %}
