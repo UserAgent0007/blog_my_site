@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+{% load blog_tags %}
 
 {% block title %}
     My Blog
@@ -29,8 +30,9 @@
         <p class="date">
             Published {{ post.publish }} by {{post.author}}
         </p>
-        {{post.body|truncatewords:30|linebreaks}} 
+        {{ post.body|markdown|truncatewords_html:30 }} 
         <!-- truncate - обмеження до вказаного числа слів, linebreaks - конвертує результат в розриви рядків (<br>) -->
+        <!-- truncatewords_html відрізняється від truncatewords тим що він урізає контент в html тезі уникаючи незакритих тегів -->
     {% endfor %}
     {% include 'pagination.html' with page=posts %} 
     <!-- with допомагає зробити підміну -->
