@@ -10,6 +10,8 @@ from django.views.decorators.http import require_POST # декоратор, як
 # Create your views here.
 
 from .models import Post
+from taggit.models import Tag
+from django.db.models import Count
 
 class PostListView (ListView):
 
@@ -18,9 +20,16 @@ class PostListView (ListView):
     paginate_by = 3 # повертає у шаблон змінну під назвою page_obj
     template_name = 'blog/post/list.html'
 
-def post_list (request):
+def post_list (request, tag_slug=None):
 
     post_list = Post.published.all()
+
+    tag = None
+    if tag_slug:
+
+        tag = get_object_or_404 (Tag, slug=tag_slug)
+        post_list = post_list.filter (tags__in = [tag])
+
     paginator = Paginator(post_list, 3)
     page_number = request.GET.get('page', 1)
     
@@ -41,7 +50,8 @@ def post_list (request):
         posts = paginator.page(paginator.num_pages)
 
     context = {
-        'posts':posts
+        'posts':posts,
+        'tag':tag
     }
 
     return render(request, 'blog/post/list.html', context)
@@ -59,7 +69,13 @@ def post_detail (request, year, month, day, post):
     comments = post.comments.filter (active = True)
     form = CommentForm ()
 
-    return render (request, 'blog/post/detail.html', {'post':post, 'comments': comments, 'form': form})
+    post_tags_ids = post.tags.values_list ('id', flat=True) # повертає кортежі зі значеннями заданих полів 
+                                                            # (flat = True, вказує щоб повернувся список значень, 
+                                                            # а самі значення не були кортежами)
+    similar_posts = Post.published.filter (tags__in = post_tags_ids).exclude (id = post.id)
+    similar_posts = similar_posts.annotate (same_tags = Count('tags')).order_by ('-same_tags', '-publish')[:4] # оголошуємо нове поле для відфільтрованого об єкта queryset
+
+    return render (request, 'blog/post/detail.html', {'post':post, 'comments': comments, 'form': form, 'similar_posts':similar_posts})
 
 def post_share (request, post_id):
 
