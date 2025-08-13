@@ -3,6 +3,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.urls import reverse
 
+from taggit.managers import TaggableManager
+
 # Create your models here.
 class PublishManager (models.Manager): # Можна ще змінювати поведінку функцій create, get_or_create, bulk_create
                                        # Можна змінювати ще сам об єкт QuerySet, тобто створити новий і перепризначити
@@ -44,6 +46,13 @@ class Post (models.Model):
 
     objects = models.Manager() # для того, щоб вказати інший дефолтний модельний менеджер ми повинні в meta прописати default_manager_name
     published = PublishManager() # вказуємо додатковий прикладний менеджер
+
+    tags = TaggableManager () # менеджер допомагає добавляти, витягувати, видаляти теги із об єктів POST 
+                              # можливі команди all(), add(), remove()
+                              # модель taggit: Tag - зберігає ім я та slug, 
+                              # TaggedItem - зберігає інформацію про об єкт (content_type , object_id) та посилання на сам Tag
+                              # можемо використовувати при використанні filter (tags__in = [tag]) Наприклад
+
 
     class Meta:
 
