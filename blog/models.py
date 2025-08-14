@@ -34,7 +34,7 @@ class Post (models.Model):
     body = models.TextField ()
     publish = models.DateTimeField (default=timezone.now)
     created = models.DateTimeField (auto_now_add=True) # Дата буде збереженна автоматично при створенні об єкта
-    updaed = models.DateTimeField (auto_now = True) # дата буде збереженна при модифікації об єкта
+    updated = models.DateTimeField (auto_now = True) # дата буде збереженна при модифікації об єкта
     author = models.ForeignKey (settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                  related_name='blog_posts') # related_name - для того, щоб вказати зворотний зв'язок від User до post
 

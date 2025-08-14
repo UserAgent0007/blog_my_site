@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+SITE_ID = 1
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taggit', # прогурама для тегування (потрібно качати django-taggit)
+    'django.contrib.sites', #
+    'django.contrib.sitemaps', # створення карти сайту
     # my apps
     'blog.apps.BlogConfig',
 ]
