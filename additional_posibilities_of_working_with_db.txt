@@ -217,6 +217,8 @@ SearchVector - дає можливість здійснювати повноте
 SearchQuery -  допомагає звести слова до спільнокореневих (і вважає слова подібними), видаляє такі стоп слова як : a, of, the та інші.
 SearchRank - допомагає впорядкувати результати пошуку за часттотою вживання та важливістю вимагає в якості своїх параметрів SearchVector та SearchQuery
 
+У SearchQuery, SearchVector можна змінити мову пошуку вказавши додатковий параметр config='мова'
+
 Приклади використання
 
 search_query = SearchQuery (...)
@@ -225,3 +227,12 @@ search_vector = SearchVector(...) / можна ще добавляти в пар
 result = Post.published.anotate (search=search_vector).filter(search = search_query)
 
 result = Post.published.anotate (search=search_vector, rank=SearchRank(search_vector, search_query)).filter(rank__gte=0.3).order_by('-rank')
+
+
+
+Триграмний пошук
+
+Пошук співпвдінь трьох послідовних символів. Схожість вимірюється кількістю таких співпадінь
+Для того щоб це використовувати потрібно встановити розширення pg_trgm, тут допоможуть міграції бази даних
+
+Далі у представленні імпортуємо TrigramSimilarity (з такої самої ієрархіх як SearchQuery і тд.) і в якості параметрів передаємо поле та те, що ми шукаємо , коли цей параметр передається у функцію, він повинен бути у вигляді рядка
