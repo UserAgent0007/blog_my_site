@@ -189,3 +189,28 @@ Post.objects.filter (starts_who | starts_why) - | - або, ^ - XOR, & - and
 
 
 
+
+
+# for working with postgres you need to install psycopg
+
+
+
+Процес вигрузки данних із бази у файл називається фікстури
+
+Команда яка це реалізовує називається dumpdata
+
+
+Прописуємо налаштування у database файл settings.py та прописуємо змінні середовища відповідно
+
+після цього робимо migrate і далі loaddata
+
+базу створюємо у докері
+
+
+search () - повнотекстовий пошук (шукає збіги слів або фраз)
+Підтримується PostgreSQL
+використовується у фільтрах (field__search = 'abrabebra')
+
+from django.contrib.postgres.search import SearchVector
+SearchVector - дає можливість здійснювати повнотекстовий пошук по декільком полям
+
